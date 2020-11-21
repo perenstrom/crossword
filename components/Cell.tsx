@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Decorator, DecoratorType } from './Decorator';
 
 const CellWrapper = styled.div`
   border: 1px solid black;
@@ -24,12 +25,14 @@ const Legend = styled.div`
 
 interface Props {
   legend?: string;
+  decorator?: DecoratorType;
 }
 
-export const Cell: React.FC<Props> = function Cell({ legend }) {
+export const Cell: React.FC<Props> = function Cell({ legend, decorator }) {
   return (
     <CellWrapper>
       {legend && <Legend>{legend}</Legend>}
+      {decorator && <Decorator decorator={decorator} />}
       <Input type="text" maxLength={1} />
     </CellWrapper>
   );

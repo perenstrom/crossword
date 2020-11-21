@@ -2,11 +2,12 @@ import React from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import styled from 'styled-components';
-import { Cell } from 'components/Cell';
+import { Cell, DecoratorType } from 'components/Cell';
 
 interface PlanCell {
   type: 'blank' | 'cell';
   legend?: string;
+  decorator?: DecoratorType;
 }
 
 const plan: PlanCell[][] = [
@@ -24,7 +25,7 @@ const plan: PlanCell[][] = [
   [
     { type: 'blank' },
     { type: 'blank' },
-    { type: 'cell' },
+    { type: 'cell', decorator: 'vth' },
     { type: 'cell' },
     { type: 'cell' },
     { type: 'cell' },
@@ -49,7 +50,7 @@ const plan: PlanCell[][] = [
     { type: 'cell' },
     { type: 'cell' },
     { type: 'cell' },
-    { type: 'cell' },
+    { type: 'cell', decorator: 'htv' },
     { type: 'cell' },
     { type: 'cell' },
     { type: 'blank' }
@@ -66,7 +67,7 @@ const plan: PlanCell[][] = [
     { type: 'blank' }
   ],
   [
-    { type: 'cell' },
+    { type: 'cell', decorator: 'vth' },
     { type: 'cell', legend: '13.' },
     { type: 'blank' },
     { type: 'blank' },
@@ -85,7 +86,7 @@ const plan: PlanCell[][] = [
     { type: 'cell' },
     { type: 'blank' },
     { type: 'cell', legend: '14.' },
-    { type: 'cell' }
+    { type: 'cell', decorator: 'htv' }
   ],
   [
     { type: 'cell', legend: '15.' },
@@ -93,7 +94,7 @@ const plan: PlanCell[][] = [
     { type: 'cell' },
     { type: 'cell' },
     { type: 'blank' },
-    { type: 'cell' },
+    { type: 'cell', decorator: 'vth' },
     { type: 'cell' },
     { type: 'blank' },
     { type: 'cell' }
@@ -126,7 +127,11 @@ const Home: NextPage<{}> = () => {
       <CrosswordGrid>
         {plan.map((row) =>
           row.map((cell) =>
-            cell.type === 'blank' ? <Blank /> : <Cell legend={cell.legend} />
+            cell.type === 'blank' ? (
+              <Blank />
+            ) : (
+              <Cell legend={cell.legend} decorator={cell.decorator} />
+            )
           )
         )}
       </CrosswordGrid>
