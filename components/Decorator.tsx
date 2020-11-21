@@ -52,8 +52,8 @@ export const Decorator: React.FC<Props> = function Cell({ decorator }) {
         viewBox="0 0 107 107"
       >
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M 0 41 l 47 42 v -30 h 32 v 50 h 24 V 29 h -56 V 0 L 0 41 z"
         />
       </Svg>

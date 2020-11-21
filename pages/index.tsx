@@ -144,8 +144,7 @@ const Home: NextPage<{}> = () => {
   return (
     <Wrapper>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Kryssplanen</title>
       </Head>
       <CrosswordGridWrapper>
         <CrosswordGrid>
