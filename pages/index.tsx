@@ -4,6 +4,102 @@ import { NextPage } from 'next';
 import styled from 'styled-components';
 import { Cell } from 'components/Cell';
 
+interface PlanCell {
+  type: 'blank' | 'cell';
+  legend?: string;
+}
+
+const plan: PlanCell[][] = [
+  [
+    { type: 'blank' },
+    { type: 'cell', legend: '1.' },
+    { type: 'cell', legend: '2.' },
+    { type: 'cell', legend: '3.' },
+    { type: 'cell', legend: '4.' },
+    { type: 'cell', legend: '5.' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'blank' }
+  ],
+  [
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'blank' }
+  ],
+  [
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'cell', legend: '10.' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'blank' }
+  ],
+  [
+    { type: 'cell', legend: '11.' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'blank' }
+  ],
+  [
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'cell', legend: '12.' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'blank' }
+  ],
+  [
+    { type: 'cell' },
+    { type: 'cell', legend: '13.' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'blank' }
+  ],
+  [
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'cell', legend: '14.' },
+    { type: 'cell' }
+  ],
+  [
+    { type: 'cell', legend: '15.' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'cell' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'cell' }
+  ]
+];
+
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -20,9 +116,7 @@ const CrosswordGrid = styled.div`
 
 const Blank = styled.div``;
 
-interface Props {}
-
-const Home: NextPage<Props> = () => {
+const Home: NextPage<{}> = () => {
   return (
     <Wrapper>
       <Head>
@@ -30,95 +124,11 @@ const Home: NextPage<Props> = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <CrosswordGrid>
-        <Blank />
-        <Cell legend="1." />
-        <Cell legend="2." />
-        <Cell legend="3." />
-        <Cell legend="4." />
-        <Cell legend="5." />
-        <Cell />
-        <Cell />
-        <Blank />
-
-        <Blank />
-        <Blank />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Blank />
-        <Blank />
-        <Blank />
-
-        <Cell legend="6." />
-        <Blank />
-        <Blank />
-        <Cell legend="7." />
-        <Cell />
-        <Blank />
-        <Cell legend="8." />
-        <Cell legend="9." />
-        <Cell />
-
-        <Cell />
-        <Blank />
-        <Blank />
-        <Cell legend="10." />
-        <Cell />
-        <Cell />
-        <Blank />
-        <Cell />
-        <Blank />
-
-        <Cell legend="11." />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Blank />
-
-        <Cell />
-        <Blank />
-        <Blank />
-        <Cell legend="12." />
-        <Blank />
-        <Cell />
-        <Blank />
-        <Cell />
-        <Blank />
-
-        <Cell />
-        <Cell legend="13." />
-        <Blank />
-        <Cell />
-        <Blank />
-        <Cell />
-        <Blank />
-        <Cell />
-        <Blank />
-
-        <Blank />
-        <Cell />
-        <Blank />
-        <Blank />
-        <Blank />
-        <Cell />
-        <Blank />
-        <Cell legend="14." />
-        <Cell />
-
-        <Cell legend="15." />
-        <Cell />
-        <Cell />
-        <Cell />
-        <Blank />
-        <Cell />
-        <Cell />
-        <Blank />
-        <Cell />
+        {plan.map((row) =>
+          row.map((cell) =>
+            cell.type === 'blank' ? <Blank /> : <Cell legend={cell.legend} />
+          )
+        )}
       </CrosswordGrid>
     </Wrapper>
   );
