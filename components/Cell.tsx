@@ -11,16 +11,24 @@ const Input = styled.input`
   width: 100%;
   height: 100%;
   text-align: center;
-  font-size: 2rem;
+  font-size: 2em;
   text-transform: uppercase;
+
+  @media (min-width: 720px) {
+  font-size: 3em;
+  }
 `;
 
 const Legend = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  padding: 0.5rem;
+  padding: 0.3rem;
   font-weight: bold;
+
+  @media (min-width: 414px) {
+    padding: 0.5rem;
+  }
 `;
 
 interface Props {

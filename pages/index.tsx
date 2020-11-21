@@ -2,7 +2,8 @@ import React from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import styled from 'styled-components';
-import { Cell, DecoratorType } from 'components/Cell';
+import { Cell } from 'components/Cell';
+import { DecoratorType } from 'components/Decorator';
 
 interface PlanCell {
   type: 'blank' | 'cell';
@@ -34,12 +35,23 @@ const plan: PlanCell[][] = [
     { type: 'blank' }
   ],
   [
+    { type: 'cell', legend: '6.' },
+    { type: 'blank' },
+    { type: 'blank' },
+    { type: 'cell', legend: '7.' },
+    { type: 'cell' },
+    { type: 'blank' },
+    { type: 'cell', legend: '8.' },
+    { type: 'cell', legend: '9.' },
+    { type: 'cell' }
+  ],
+  [
     { type: 'cell' },
     { type: 'blank' },
     { type: 'blank' },
     { type: 'cell', legend: '10.' },
     { type: 'cell' },
-    { type: 'cell' },
+    { type: 'cell', decorator: 'htv' },
     { type: 'blank' },
     { type: 'cell' },
     { type: 'blank' }
@@ -50,7 +62,7 @@ const plan: PlanCell[][] = [
     { type: 'cell' },
     { type: 'cell' },
     { type: 'cell' },
-    { type: 'cell', decorator: 'htv' },
+    { type: 'cell' },
     { type: 'cell' },
     { type: 'cell' },
     { type: 'blank' }
@@ -70,7 +82,7 @@ const plan: PlanCell[][] = [
     { type: 'cell', decorator: 'vth' },
     { type: 'cell', legend: '13.' },
     { type: 'blank' },
-    { type: 'blank' },
+    { type: 'cell' },
     { type: 'blank' },
     { type: 'cell' },
     { type: 'blank' },
@@ -108,11 +120,22 @@ const Wrapper = styled.div`
 `;
 
 const CrosswordGrid = styled.div`
+  position: absolute;
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
+`;
+
+const CrosswordGridWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  ::after {
+    content: '';
+    display: block;
+    padding-bottom: 100%;
+  }
 `;
 
 const Blank = styled.div``;
@@ -124,17 +147,19 @@ const Home: NextPage<{}> = () => {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <CrosswordGrid>
-        {plan.map((row) =>
-          row.map((cell) =>
-            cell.type === 'blank' ? (
-              <Blank />
-            ) : (
-              <Cell legend={cell.legend} decorator={cell.decorator} />
+      <CrosswordGridWrapper>
+        <CrosswordGrid>
+          {plan.map((row) =>
+            row.map((cell) =>
+              cell.type === 'blank' ? (
+                <Blank />
+              ) : (
+                <Cell legend={cell.legend} decorator={cell.decorator} />
+              )
             )
-          )
-        )}
-      </CrosswordGrid>
+          )}
+        </CrosswordGrid>
+      </CrosswordGridWrapper>
     </Wrapper>
   );
 };
