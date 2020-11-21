@@ -2,10 +2,12 @@ import React from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import styled from 'styled-components';
+import { Cell } from 'components/Cell';
 
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
+  padding: 2rem;
 `;
 
 const CrosswordGrid = styled.div`
@@ -14,29 +16,9 @@ const CrosswordGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
-  border: 1px solid red;
 `;
 
-const Cell = styled.div`
-  border: 1px solid red;
-  position: relative;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  font-size: 2rem;
-  text-transform: uppercase;
-`;
-
-const Legend = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 0.5rem;
-  font-weight: bold;
-`;
+const Blank = styled.div``;
 
 interface Props {}
 
@@ -48,210 +30,95 @@ const Home: NextPage<Props> = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <CrosswordGrid>
-        <Cell></Cell>
-        <Cell>
-          <Legend>1.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Legend>2.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Legend>3.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Legend>4.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Legend>5.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
+        <Blank />
+        <Cell legend="1." />
+        <Cell legend="2." />
+        <Cell legend="3." />
+        <Cell legend="4." />
+        <Cell legend="5." />
+        <Cell />
+        <Cell />
+        <Blank />
 
-        <Cell></Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell></Cell>
-        <Cell></Cell>
+        <Blank />
+        <Blank />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Blank />
+        <Blank />
+        <Blank />
 
-        <Cell>
-          <Legend>6.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell></Cell>
-        <Cell>
-          <Legend>7.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Legend>8.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Legend>9.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
+        <Cell legend="6." />
+        <Blank />
+        <Blank />
+        <Cell legend="7." />
+        <Cell />
+        <Blank />
+        <Cell legend="8." />
+        <Cell legend="9." />
+        <Cell />
 
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell></Cell>
-        <Cell>
-          <Legend>10.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
+        <Cell />
+        <Blank />
+        <Blank />
+        <Cell legend="10." />
+        <Cell />
+        <Cell />
+        <Blank />
+        <Cell />
+        <Blank />
 
-        <Cell>
-          <Legend>11.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
+        <Cell legend="11." />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Blank />
 
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell></Cell>
-        <Cell>
-          <Legend>12.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
+        <Cell />
+        <Blank />
+        <Blank />
+        <Cell legend="12." />
+        <Blank />
+        <Cell />
+        <Blank />
+        <Cell />
+        <Blank />
 
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Legend>13.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
+        <Cell />
+        <Cell legend="13." />
+        <Blank />
+        <Cell />
+        <Blank />
+        <Cell />
+        <Blank />
+        <Cell />
+        <Blank />
 
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell></Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Legend>14.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
+        <Blank />
+        <Cell />
+        <Blank />
+        <Blank />
+        <Blank />
+        <Cell />
+        <Blank />
+        <Cell legend="14." />
+        <Cell />
 
-        <Cell>
-          <Legend>15.</Legend>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
-        <Cell></Cell>
-        <Cell>
-          <Input type="text" maxLength={1} />
-        </Cell>
+        <Cell legend="15." />
+        <Cell />
+        <Cell />
+        <Cell />
+        <Blank />
+        <Cell />
+        <Cell />
+        <Blank />
+        <Cell />
       </CrosswordGrid>
     </Wrapper>
   );
