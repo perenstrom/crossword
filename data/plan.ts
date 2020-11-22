@@ -5,13 +5,21 @@ export enum CellType {
   cell = 'cell'
 }
 
-interface PlanCell {
+export interface Line {
+  horizontal: string[];
+  vertical: string[];
+}
+
+export interface PlanCell {
   type: CellType;
   legend?: string;
   decorator?: DecoratorType;
+  line?: Line;
 }
 
-export const plan: PlanCell[][] = [
+export type Plan = PlanCell[][];
+
+export const plan: Plan = [
   [
     { type: CellType.blank },
     { type: CellType.cell, legend: '1.' },

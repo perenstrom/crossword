@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
 import Head from 'next/head';
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import styled from 'styled-components';
 import { Cell } from 'components/Cell';
 
-import { CellType, plan } from 'data/plan';
+import { CellType, Plan, plan as rawPlan } from 'data/plan';
 import { CellPosition, Direction } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
+import { positionShorthandToLong } from 'utils/positionShorthandToLong';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -35,14 +36,19 @@ const CrosswordGridWrapper = styled.div`
 
 const Blank = styled.div``;
 
-const size = {
-  columns: plan[0].length,
-  rows: plan.length
-};
+interface Size {
+  x: number;
+  y: number;
+}
 
-const Home: NextPage<{}> = () => {
+interface Props {
+  plan: Plan;
+  size: Size;
+}
+
+const Home: NextPage<Props> = ({ plan, size }) => {
   const [values, setValues] = useState<string[][]>(
-    Array(size.rows).fill(Array(size.columns).fill(''))
+    Array(size.y).fill(Array(size.x).fill(''))
   );
   const setValue = (position: CellPosition, value) => {
     const newValues = values.map((row) => [...row]);
@@ -67,7 +73,7 @@ const Home: NextPage<{}> = () => {
   const giveNextCellFocus = (currentPosition: CellPosition) => {
     if (
       activeDirection === Direction.horizontal &&
-      currentPosition.x + 1 !== size.columns &&
+      currentPosition.x + 1 !== size.x &&
       plan[currentPosition.y][currentPosition.x + 1].type === CellType.cell
     ) {
       inputRefs.current[
@@ -75,7 +81,7 @@ const Home: NextPage<{}> = () => {
       ].focus?.();
     } else if (
       activeDirection === Direction.vertical &&
-      currentPosition.y + 1 !== size.rows &&
+      currentPosition.y + 1 !== size.y &&
       plan[currentPosition.y + 1][currentPosition.x].type === CellType.cell
     ) {
       inputRefs.current[
@@ -144,3 +150,75 @@ const Home: NextPage<{}> = () => {
 };
 
 export default Home;
+
+const calculateLine = (
+  plan: Plan,
+  direction: Direction,
+  start: CellPosition,
+  size: Size
+): string[] => {
+  let result: string[] = [`x${start.x}y${start.y}`];
+
+  const directionAxis = direction === Direction.horizontal ? 'x' : 'y';
+  const nextCellPosition: CellPosition = {
+    x: direction === Direction.horizontal ? start.x + 1 : start.x,
+    y: direction === Direction.horizontal ? start.y : start.y + 1
+  };
+
+  if (
+    nextCellPosition[directionAxis] < size[directionAxis] &&
+    plan[nextCellPosition.y][nextCellPosition.x].type === CellType.cell
+  ) {
+    const innerResult = calculateLine(plan, direction, nextCellPosition, size);
+    result = [...result, ...innerResult];
+  }
+
+  return result;
+};
+
+const calculateLines = (plan: Plan, size: Size): Plan => {
+  plan.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell.type === CellType.cell) {
+        ['horizontal', 'vertical'].forEach((direction) => {
+          if (!cell.line?.[direction] || cell.line?.[direction]?.length === 0) {
+            const line = calculateLine(
+              plan,
+              Direction[direction],
+              { x, y },
+              size
+            );
+
+            line.forEach((cellInLine) => {
+              const fullPosition = positionShorthandToLong(cellInLine);
+              if (!plan[fullPosition.y][fullPosition.x].line) {
+                plan[fullPosition.y][fullPosition.x].line = {
+                  [Direction.horizontal]: [],
+                  [Direction.vertical]: []
+                };
+              }
+              plan[fullPosition.y][fullPosition.x].line[direction] = line;
+            });
+          }
+        });
+      }
+    });
+  });
+
+  return plan;
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const size: Size = {
+    y: rawPlan.length,
+    x: rawPlan[0].length
+  };
+
+  const extendedPlan = calculateLines(rawPlan, size);
+  return {
+    props: {
+      plan: extendedPlan,
+      size: size
+    }
+  };
+};
