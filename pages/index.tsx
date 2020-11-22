@@ -1,117 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import styled from 'styled-components';
 import { Cell } from 'components/Cell';
-import { DecoratorType } from 'components/Decorator';
 
-interface PlanCell {
-  type: 'blank' | 'cell';
-  legend?: string;
-  decorator?: DecoratorType;
-}
-
-const plan: PlanCell[][] = [
-  [
-    { type: 'blank' },
-    { type: 'cell', legend: '1.' },
-    { type: 'cell', legend: '2.' },
-    { type: 'cell', legend: '3.' },
-    { type: 'cell', legend: '4.' },
-    { type: 'cell', legend: '5.' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'blank' }
-  ],
-  [
-    { type: 'blank' },
-    { type: 'blank' },
-    { type: 'cell', decorator: 'vth' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'blank' },
-    { type: 'blank' }
-  ],
-  [
-    { type: 'cell', legend: '6.' },
-    { type: 'blank' },
-    { type: 'blank' },
-    { type: 'cell', legend: '7.' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'cell', legend: '8.' },
-    { type: 'cell', legend: '9.' },
-    { type: 'cell' }
-  ],
-  [
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'blank' },
-    { type: 'cell', legend: '10.' },
-    { type: 'cell' },
-    { type: 'cell', decorator: 'htv' },
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' }
-  ],
-  [
-    { type: 'cell', legend: '11.' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'blank' }
-  ],
-  [
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'blank' },
-    { type: 'cell', legend: '12.' },
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' }
-  ],
-  [
-    { type: 'cell', decorator: 'vth' },
-    { type: 'cell', legend: '13.' },
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' }
-  ],
-  [
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'blank' },
-    { type: 'blank' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'cell', legend: '14.' },
-    { type: 'cell', decorator: 'htv' }
-  ],
-  [
-    { type: 'cell', legend: '15.' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'cell', decorator: 'vth' },
-    { type: 'cell' },
-    { type: 'blank' },
-    { type: 'cell' }
-  ]
-];
+import { plan } from 'data/plan';
+import { CellPosition } from 'types/Types';
+import { cellPositionEqual } from 'utils/cellPositionEqual';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -141,6 +36,8 @@ const CrosswordGridWrapper = styled.div`
 const Blank = styled.div``;
 
 const Home: NextPage<{}> = () => {
+  const [activeCell, setActiveCell] = useState<CellPosition>(null);
+
   return (
     <Wrapper>
       <Head>
@@ -148,17 +45,24 @@ const Home: NextPage<{}> = () => {
       </Head>
       <CrosswordGridWrapper>
         <CrosswordGrid>
-          {plan.map((row) =>
-            row.map((cell) =>
+          {plan.map((row, y) =>
+            row.map((cell, x) =>
               cell.type === 'blank' ? (
                 <Blank />
               ) : (
-                <Cell legend={cell.legend} decorator={cell.decorator} />
+                <Cell
+                  legend={cell.legend}
+                  decorator={cell.decorator}
+                  position={{ x, y }}
+                  isActive={cellPositionEqual({ x, y }, activeCell)}
+                  onFocus={setActiveCell}
+                />
               )
             )
           )}
         </CrosswordGrid>
       </CrosswordGridWrapper>
+      {<pre>{JSON.stringify(activeCell, null, 2)}</pre>}
     </Wrapper>
   );
 };

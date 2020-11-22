@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { CellPosition } from 'types/Types';
 import { Decorator, DecoratorType } from './Decorator';
 
 const CellWrapper = styled.div`
@@ -7,15 +8,25 @@ const CellWrapper = styled.div`
   position: relative;
 `;
 
-const Input = styled.input`
+interface InputProps {
+  readonly isActive: boolean;
+}
+
+const Input = styled.input<InputProps>`
   width: 100%;
   height: 100%;
   text-align: center;
   font-size: 2em;
   text-transform: uppercase;
+  border: 0;
+  background-color: ${({ isActive }) => (isActive ? '#E0E0FF' : 'white')};
+
+  :focus {
+    outline: 0;
+  }
 
   @media (min-width: 720px) {
-  font-size: 3em;
+    font-size: 3em;
   }
 `;
 
@@ -34,14 +45,23 @@ const Legend = styled.div`
 interface Props {
   legend?: string;
   decorator?: DecoratorType;
+  position: CellPosition;
+  isActive: boolean;
+  onFocus: (position: CellPosition) => void;
 }
 
-export const Cell: React.FC<Props> = function Cell({ legend, decorator }) {
+export const Cell: React.FC<Props> = function Cell({
+  legend,
+  decorator,
+  position,
+  isActive,
+  onFocus
+}) {
   return (
-    <CellWrapper>
+    <CellWrapper onFocus={() => onFocus(position)}>
       {legend && <Legend>{legend}</Legend>}
       {decorator && <Decorator decorator={decorator} />}
-      <Input type="text" maxLength={1} />
+      <Input isActive={isActive} type="text" maxLength={1} />
     </CellWrapper>
   );
 };
