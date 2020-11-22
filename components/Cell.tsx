@@ -10,6 +10,7 @@ const CellWrapper = styled.div`
 
 interface InputProps {
   readonly isActive: boolean;
+  readonly isInline: boolean;
 }
 
 const Input = styled.input<InputProps>`
@@ -19,7 +20,8 @@ const Input = styled.input<InputProps>`
   font-size: 2em;
   text-transform: uppercase;
   border: 0;
-  background-color: ${({ isActive }) => (isActive ? '#E0E0FF' : 'white')};
+  background-color: ${({ isActive, isInline }) =>
+    isActive ? '#D0D0FF' : isInline ? '#EFEFFF' : 'white'};
 
   :focus {
     outline: 0;
@@ -47,7 +49,9 @@ interface Props {
   decorator?: DecoratorType;
   position: CellPosition;
   isActive: boolean;
+  isInLine: boolean;
   onFocus: (position: CellPosition) => void;
+  onClick: (position: CellPosition) => void;
 }
 
 export const Cell: React.FC<Props> = function Cell({
@@ -55,13 +59,23 @@ export const Cell: React.FC<Props> = function Cell({
   decorator,
   position,
   isActive,
-  onFocus
+  isInLine,
+  onFocus,
+  onClick
 }) {
   return (
-    <CellWrapper onFocus={() => onFocus(position)}>
+    <CellWrapper
+      /* onFocus={() => onFocus(position)} */
+      onClick={() => onClick(position)}
+    >
       {legend && <Legend>{legend}</Legend>}
       {decorator && <Decorator decorator={decorator} />}
-      <Input isActive={isActive} type="text" maxLength={1} />
+      <Input
+        isActive={isActive}
+        isInline={isInLine}
+        type="text"
+        maxLength={1}
+      />
     </CellWrapper>
   );
 };

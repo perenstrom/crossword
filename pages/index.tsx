@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Cell } from 'components/Cell';
 
 import { plan } from 'data/plan';
-import { CellPosition } from 'types/Types';
+import { CellPosition, Direction } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 
 const Wrapper = styled.div`
@@ -37,6 +37,23 @@ const Blank = styled.div``;
 
 const Home: NextPage<{}> = () => {
   const [activeCell, setActiveCell] = useState<CellPosition>(null);
+  const [activeDirection, setActiveDirection] = useState<Direction>(
+    Direction.horizontal
+  );
+  const toggleActiveDirection = () => {
+    if (activeDirection === Direction.horizontal) {
+      setActiveDirection(Direction.vertical);
+    } else {
+      setActiveDirection(Direction.horizontal);
+    }
+  };
+
+  const handleCellClick = (position: CellPosition): void => {
+    if (cellPositionEqual(activeCell, position)) {
+      toggleActiveDirection();
+    }
+    setActiveCell(position);
+  };
 
   return (
     <Wrapper>
@@ -55,7 +72,14 @@ const Home: NextPage<{}> = () => {
                   decorator={cell.decorator}
                   position={{ x, y }}
                   isActive={cellPositionEqual({ x, y }, activeCell)}
+                  isInLine={
+                    (activeDirection === Direction.vertical &&
+                      activeCell?.x === x) ||
+                    (activeDirection === Direction.horizontal &&
+                      activeCell?.y === y)
+                  }
                   onFocus={setActiveCell}
+                  onClick={handleCellClick}
                 />
               )
             )
