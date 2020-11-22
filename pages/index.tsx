@@ -131,10 +131,16 @@ const Home: NextPage<Props> = ({ plan, size }) => {
                   position={{ x, y }}
                   isActive={cellPositionEqual({ x, y }, activeCell)}
                   isInLine={
-                    (activeDirection === Direction.vertical &&
-                      activeCell?.x === x) ||
                     (activeDirection === Direction.horizontal &&
-                      activeCell?.y === y)
+                      activeCell &&
+                      plan[activeCell.y][activeCell.x].line.horizontal.includes(
+                        `x${x}y${y}`
+                      )) ||
+                    (activeDirection === Direction.vertical &&
+                      activeCell &&
+                      plan[activeCell.y][activeCell.x].line.vertical.includes(
+                        `x${x}y${y}`
+                      ))
                   }
                   onClick={handleCellClick}
                   onChange={handleCellChange}
