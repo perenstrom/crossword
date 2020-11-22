@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps, NextPage } from 'next';
-import styled from 'styled-components';
 import { Cell } from 'components/Cell';
 
 import { CellType, Plan, plan as rawPlan } from 'data/plan';

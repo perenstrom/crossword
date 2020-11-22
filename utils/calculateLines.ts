@@ -1,6 +1,27 @@
+import { DecoratorType } from 'components/Decorator';
 import { CellType, Plan } from 'data/plan';
 import { CellPosition, Direction, Size } from 'types/Types';
 import { positionShorthandToLong } from './positionShorthandToLong';
+
+const getNextCellPosition = (
+  direction: Direction,
+  position: CellPosition,
+  decorator: DecoratorType
+): [CellPosition, Direction] => {
+  const newDirection =
+    direction === Direction.horizontal && decorator === 'htv'
+      ? Direction.vertical
+      : direction === Direction.vertical && decorator === 'vth'
+      ? Direction.horizontal
+      : direction;
+
+  const newPosition: CellPosition = {
+    x: newDirection === Direction.horizontal ? position.x + 1 : position.x,
+    y: newDirection === Direction.horizontal ? position.y : position.y + 1
+  };
+
+  return [newPosition, newDirection];
+};
 
 const calculateLine = (
   plan: Plan,
@@ -10,17 +31,25 @@ const calculateLine = (
 ): string[] => {
   let result: string[] = [`x${start.x}y${start.y}`];
 
-  const directionAxis = direction === Direction.horizontal ? 'x' : 'y';
-  const nextCellPosition: CellPosition = {
-    x: direction === Direction.horizontal ? start.x + 1 : start.x,
-    y: direction === Direction.horizontal ? start.y : start.y + 1
-  };
+  const decorator = plan[start.y][start.x].decorator;
+
+  const [nextCellPosition, newDirection] = getNextCellPosition(
+    direction,
+    start,
+    decorator
+  );
+  const directionAxis = newDirection === Direction.horizontal ? 'x' : 'y';
 
   if (
     nextCellPosition[directionAxis] < size[directionAxis] &&
     plan[nextCellPosition.y][nextCellPosition.x].type === CellType.cell
   ) {
-    const innerResult = calculateLine(plan, direction, nextCellPosition, size);
+    const innerResult = calculateLine(
+      plan,
+      newDirection,
+      nextCellPosition,
+      size
+    );
     result = [...result, ...innerResult];
   }
 
