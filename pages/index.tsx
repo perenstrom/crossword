@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 import styled from 'styled-components';
 import { Cell } from 'components/Cell';
 
-import { plan } from 'data/plan';
+import { CellType, plan } from 'data/plan';
 import { CellPosition, Direction } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 
@@ -64,12 +64,44 @@ const Home: NextPage<{}> = () => {
     }
   };
 
+  const giveNextCellFocus = (currentPosition: CellPosition) => {
+    if (
+      activeDirection === Direction.horizontal &&
+      currentPosition.x + 1 !== size.columns &&
+      plan[currentPosition.y][currentPosition.x + 1].type === CellType.cell
+    ) {
+      inputRefs.current[
+        `x${currentPosition.x + 1}y${currentPosition.y}`
+      ].focus?.();
+    } else if (
+      activeDirection === Direction.vertical &&
+      currentPosition.y + 1 !== size.rows &&
+      plan[currentPosition.y + 1][currentPosition.x].type === CellType.cell
+    ) {
+      inputRefs.current[
+        `x${currentPosition.x}y${currentPosition.y + 1}`
+      ].focus?.();
+    } else {
+      inputRefs.current[
+        `x${currentPosition.x}y${currentPosition.y}`
+      ].select?.();
+    }
+  };
+
+  const handleCellChange = (position: CellPosition, value) => {
+    setValue(position, value);
+
+    if (value.length === 1) {
+      giveNextCellFocus(position);
+    }
+  };
+
   const handleCellClick = (position: CellPosition): void => {
+    inputRefs.current[`x${position.x}y${position.y}`].select?.();
     if (cellPositionEqual(activeCell, position)) {
       toggleActiveDirection();
     }
     setActiveCell(position);
-    //inputRefs.current['x2y1'].focus?.();
   };
 
   return (
@@ -99,7 +131,7 @@ const Home: NextPage<{}> = () => {
                       activeCell?.y === y)
                   }
                   onClick={handleCellClick}
-                  onChange={setValue}
+                  onChange={handleCellChange}
                 />
               )
             )
