@@ -7,3 +7,8 @@ export enum Direction {
   horizontal = 'horizontal',
   vertical = 'vertical'
 }
+
+export interface Size {
+  x: number;
+  y: number;
+}

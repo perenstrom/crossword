@@ -5,41 +5,13 @@ import styled from 'styled-components';
 import { Cell } from 'components/Cell';
 
 import { CellType, Plan, plan as rawPlan } from 'data/plan';
-import { CellPosition, Direction } from 'types/Types';
+import { CellPosition, Direction, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
-import { positionShorthandToLong } from 'utils/positionShorthandToLong';
-
-const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-  padding: 2rem;
-`;
-
-const CrosswordGrid = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(9, 1fr);
-`;
-
-const CrosswordGridWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  ::after {
-    content: '';
-    display: block;
-    padding-bottom: 100%;
-  }
-`;
-
-const Blank = styled.div``;
-
-interface Size {
-  x: number;
-  y: number;
-}
+import { calculateLines } from 'utils/calculateLines';
+import { Wrapper } from 'components/Wrapper';
+import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
+import { CrosswordGrid } from 'components/CrosswordGrid';
+import { Blank } from 'components/Blank';
 
 interface Props {
   plan: Plan;
@@ -156,63 +128,6 @@ const Home: NextPage<Props> = ({ plan, size }) => {
 };
 
 export default Home;
-
-const calculateLine = (
-  plan: Plan,
-  direction: Direction,
-  start: CellPosition,
-  size: Size
-): string[] => {
-  let result: string[] = [`x${start.x}y${start.y}`];
-
-  const directionAxis = direction === Direction.horizontal ? 'x' : 'y';
-  const nextCellPosition: CellPosition = {
-    x: direction === Direction.horizontal ? start.x + 1 : start.x,
-    y: direction === Direction.horizontal ? start.y : start.y + 1
-  };
-
-  if (
-    nextCellPosition[directionAxis] < size[directionAxis] &&
-    plan[nextCellPosition.y][nextCellPosition.x].type === CellType.cell
-  ) {
-    const innerResult = calculateLine(plan, direction, nextCellPosition, size);
-    result = [...result, ...innerResult];
-  }
-
-  return result;
-};
-
-const calculateLines = (plan: Plan, size: Size): Plan => {
-  plan.forEach((row, y) => {
-    row.forEach((cell, x) => {
-      if (cell.type === CellType.cell) {
-        ['horizontal', 'vertical'].forEach((direction) => {
-          if (!cell.line?.[direction] || cell.line?.[direction]?.length === 0) {
-            const line = calculateLine(
-              plan,
-              Direction[direction],
-              { x, y },
-              size
-            );
-
-            line.forEach((cellInLine) => {
-              const fullPosition = positionShorthandToLong(cellInLine);
-              if (!plan[fullPosition.y][fullPosition.x].line) {
-                plan[fullPosition.y][fullPosition.x].line = {
-                  [Direction.horizontal]: [],
-                  [Direction.vertical]: []
-                };
-              }
-              plan[fullPosition.y][fullPosition.x].line[direction] = line;
-            });
-          }
-        });
-      }
-    });
-  });
-
-  return plan;
-};
 
 export const getStaticProps: GetStaticProps = async () => {
   const size: Size = {
