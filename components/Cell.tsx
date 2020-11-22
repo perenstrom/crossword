@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 import { CellPosition } from 'types/Types';
 import { Decorator, DecoratorType } from './Decorator';
@@ -51,30 +51,20 @@ interface Props {
   position: CellPosition;
   isActive: boolean;
   isInLine: boolean;
-  onFocus: (position: CellPosition) => void;
   onClick: (position: CellPosition) => void;
   onChange: (position: CellPosition, value: string) => void;
 }
 
-export const Cell: React.FC<Props> = function Cell({
-  value,
-  legend,
-  decorator,
-  position,
-  isActive,
-  isInLine,
-  onFocus,
-  onClick,
-  onChange
-}) {
+export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
+  { value, legend, decorator, position, isActive, isInLine, onClick, onChange },
+  ref
+) {
   return (
-    <CellWrapper
-      /* onFocus={() => onFocus(position)} */
-      onClick={() => onClick(position)}
-    >
+    <CellWrapper onClick={() => onClick(position)}>
       {legend && <Legend>{legend}</Legend>}
       {decorator && <Decorator decorator={decorator} />}
       <Input
+        ref={ref}
         value={value}
         isActive={isActive}
         isInline={isInLine}
@@ -84,4 +74,4 @@ export const Cell: React.FC<Props> = function Cell({
       />
     </CellWrapper>
   );
-};
+});

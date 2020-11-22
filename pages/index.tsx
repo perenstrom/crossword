@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import styled from 'styled-components';
@@ -35,15 +35,22 @@ const CrosswordGridWrapper = styled.div`
 
 const Blank = styled.div``;
 
+const size = {
+  columns: plan[0].length,
+  rows: plan.length
+};
+
 const Home: NextPage<{}> = () => {
   const [values, setValues] = useState<string[][]>(
-    Array(plan.length).fill(Array(plan[0].length).fill(''))
+    Array(size.rows).fill(Array(size.columns).fill(''))
   );
   const setValue = (position: CellPosition, value) => {
     const newValues = values.map((row) => [...row]);
     newValues[position.y][position.x] = value;
     setValues(newValues);
   };
+
+  const inputRefs = useRef({});
 
   const [activeCell, setActiveCell] = useState<CellPosition>(null);
   const [activeDirection, setActiveDirection] = useState<Direction>(
@@ -62,6 +69,7 @@ const Home: NextPage<{}> = () => {
       toggleActiveDirection();
     }
     setActiveCell(position);
+    //inputRefs.current['x2y1'].focus?.();
   };
 
   return (
@@ -74,9 +82,11 @@ const Home: NextPage<{}> = () => {
           {plan.map((row, y) =>
             row.map((cell, x) =>
               cell.type === 'blank' ? (
-                <Blank onClick={() => setActiveCell(null)} />
+                <Blank onClick={() => setActiveCell(null)} key={`${x}-${y}`} />
               ) : (
                 <Cell
+                  key={`x${x}y${y}`}
+                  ref={(element) => (inputRefs.current[`x${x}y${y}`] = element)}
                   value={values[y][x]}
                   legend={cell.legend}
                   decorator={cell.decorator}
@@ -88,7 +98,6 @@ const Home: NextPage<{}> = () => {
                     (activeDirection === Direction.horizontal &&
                       activeCell?.y === y)
                   }
-                  onFocus={setActiveCell}
                   onClick={handleCellClick}
                   onChange={setValue}
                 />
