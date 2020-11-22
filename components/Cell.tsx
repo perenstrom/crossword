@@ -45,6 +45,7 @@ const Legend = styled.div`
 `;
 
 interface Props {
+  value: string;
   legend?: string;
   decorator?: DecoratorType;
   position: CellPosition;
@@ -52,16 +53,19 @@ interface Props {
   isInLine: boolean;
   onFocus: (position: CellPosition) => void;
   onClick: (position: CellPosition) => void;
+  onChange: (position: CellPosition, value: string) => void;
 }
 
 export const Cell: React.FC<Props> = function Cell({
+  value,
   legend,
   decorator,
   position,
   isActive,
   isInLine,
   onFocus,
-  onClick
+  onClick,
+  onChange
 }) {
   return (
     <CellWrapper
@@ -71,10 +75,12 @@ export const Cell: React.FC<Props> = function Cell({
       {legend && <Legend>{legend}</Legend>}
       {decorator && <Decorator decorator={decorator} />}
       <Input
+        value={value}
         isActive={isActive}
         isInline={isInLine}
         type="text"
         maxLength={1}
+        onChange={(event) => onChange(position, event.target.value)}
       />
     </CellWrapper>
   );

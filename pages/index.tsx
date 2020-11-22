@@ -36,6 +36,15 @@ const CrosswordGridWrapper = styled.div`
 const Blank = styled.div``;
 
 const Home: NextPage<{}> = () => {
+  const [values, setValues] = useState<string[][]>(
+    Array(plan.length).fill(Array(plan[0].length).fill(''))
+  );
+  const setValue = (position: CellPosition, value) => {
+    const newValues = values.map((row) => [...row]);
+    newValues[position.y][position.x] = value;
+    setValues(newValues);
+  };
+
   const [activeCell, setActiveCell] = useState<CellPosition>(null);
   const [activeDirection, setActiveDirection] = useState<Direction>(
     Direction.horizontal
@@ -65,9 +74,10 @@ const Home: NextPage<{}> = () => {
           {plan.map((row, y) =>
             row.map((cell, x) =>
               cell.type === 'blank' ? (
-                <Blank />
+                <Blank onClick={() => setActiveCell(null)} />
               ) : (
                 <Cell
+                  value={values[y][x]}
                   legend={cell.legend}
                   decorator={cell.decorator}
                   position={{ x, y }}
@@ -80,6 +90,7 @@ const Home: NextPage<{}> = () => {
                   }
                   onFocus={setActiveCell}
                   onClick={handleCellClick}
+                  onChange={setValue}
                 />
               )
             )
