@@ -12,3 +12,8 @@ export interface Size {
   x: number;
   y: number;
 }
+
+export interface LineItem {
+  cellPosition: string;
+  direction: Direction | 'both';
+}

@@ -1,6 +1,6 @@
 import { DecoratorType } from 'components/Decorator';
 import { CellType, Plan } from 'data/plan';
-import { CellPosition, Direction, Size } from 'types/Types';
+import { CellPosition, Direction, LineItem, Size } from 'types/Types';
 import { positionShorthandToLong } from './positionShorthandToLong';
 
 const getNextCellPosition = (
@@ -28,10 +28,15 @@ const calculateLine = (
   direction: Direction,
   start: CellPosition,
   size: Size
-): string[] => {
-  let result: string[] = [`x${start.x}y${start.y}`];
-
+): LineItem[] => {
   const decorator = plan[start.y][start.x].decorator;
+
+  let result: LineItem[] = [
+    {
+      cellPosition: `x${start.x}y${start.y}`,
+      direction: decorator ? 'both' : direction
+    }
+  ];
 
   const [nextCellPosition, newDirection] = getNextCellPosition(
     direction,
@@ -57,6 +62,9 @@ const calculateLine = (
 };
 
 export const calculateLines = (plan: Plan, size: Size): Plan => {
+  // TODO: ca 14h hitills
+  // TODO: Adjust/swap horizontal vertical line after turn
+  // TODO: Use line to calculate next move after input, and automatically turn direction
   plan.forEach((row, y) => {
     row.forEach((cell, x) => {
       if (cell.type === CellType.cell) {
@@ -70,14 +78,33 @@ export const calculateLines = (plan: Plan, size: Size): Plan => {
             );
 
             line.forEach((cellInLine) => {
-              const fullPosition = positionShorthandToLong(cellInLine);
+              const fullPosition = positionShorthandToLong(
+                cellInLine.cellPosition
+              );
               if (!plan[fullPosition.y][fullPosition.x].line) {
                 plan[fullPosition.y][fullPosition.x].line = {
                   [Direction.horizontal]: [],
                   [Direction.vertical]: []
                 };
               }
-              plan[fullPosition.y][fullPosition.x].line[direction] = line;
+
+              if (
+                cellInLine.direction === Direction.horizontal ||
+                cellInLine.direction === 'both'
+              ) {
+                plan[fullPosition.y][fullPosition.x].line[
+                  Direction.horizontal
+                ] = line.map((l) => l.cellPosition);
+              }
+
+              if (
+                cellInLine.direction === Direction.vertical ||
+                cellInLine.direction === 'both'
+              ) {
+                plan[fullPosition.y][fullPosition.x].line[
+                  Direction.vertical
+                ] = line.map((l) => l.cellPosition);
+              }
             });
           }
         });
