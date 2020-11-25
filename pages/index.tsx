@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { GetStaticProps, NextPage } from 'next';
 import { Cell } from 'components/Cell';
 
-import { CellType, Plan, plan as rawPlan } from 'data/plan';
+import { Plan, plan as rawPlan } from 'data/plan';
 import { CellPosition, Direction, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 import { calculateLines } from 'utils/calculateLines';
@@ -11,6 +11,7 @@ import { Wrapper } from 'components/Wrapper';
 import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
 import { CrosswordGrid } from 'components/CrosswordGrid';
 import { Blank } from 'components/Blank';
+import { positionShorthandToLong } from 'utils/positionShorthandToLong';
 
 interface Props {
   plan: Plan;
@@ -42,22 +43,28 @@ const Home: NextPage<Props> = ({ plan, size }) => {
   };
 
   const giveNextCellFocus = (currentPosition: CellPosition) => {
-    if (
-      activeDirection === Direction.horizontal &&
-      currentPosition.x + 1 !== size.x &&
-      plan[currentPosition.y][currentPosition.x + 1].type === CellType.cell
-    ) {
-      inputRefs.current[
-        `x${currentPosition.x + 1}y${currentPosition.y}`
-      ].focus?.();
-    } else if (
-      activeDirection === Direction.vertical &&
-      currentPosition.y + 1 !== size.y &&
-      plan[currentPosition.y + 1][currentPosition.x].type === CellType.cell
-    ) {
-      inputRefs.current[
-        `x${currentPosition.x}y${currentPosition.y + 1}`
-      ].focus?.();
+    const line =
+      plan[currentPosition.y][currentPosition.x].line[activeDirection];
+
+    const currentCellInLineIndex = line.indexOf(
+      `x${currentPosition.x}y${currentPosition.y}`
+    );
+    const nextCellPositionShort =
+      currentCellInLineIndex === line.length - 1
+        ? null
+        : line[currentCellInLineIndex + 1];
+
+    if (nextCellPositionShort) {
+      const nextCellPosition = positionShorthandToLong(nextCellPositionShort);
+
+      const nextCellDecorator =
+        plan[nextCellPosition.y][nextCellPosition.x].decorator;
+      if (nextCellDecorator) {
+        toggleActiveDirection();
+      }
+      setActiveCell(nextCellPosition);
+      inputRefs.current[nextCellPositionShort].focus?.();
+      inputRefs.current[nextCellPositionShort].select?.();
     } else {
       inputRefs.current[
         `x${currentPosition.x}y${currentPosition.y}`

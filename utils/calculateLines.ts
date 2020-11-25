@@ -62,9 +62,6 @@ const calculateLine = (
 };
 
 export const calculateLines = (plan: Plan, size: Size): Plan => {
-  // TODO: ca 14h hitills
-  // TODO: Adjust/swap horizontal vertical line after turn
-  // TODO: Use line to calculate next move after input, and automatically turn direction
   plan.forEach((row, y) => {
     row.forEach((cell, x) => {
       if (cell.type === CellType.cell) {
