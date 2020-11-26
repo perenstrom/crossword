@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps, NextPage } from 'next';
 import { Cell } from 'components/Cell';
@@ -26,7 +26,15 @@ const Home: NextPage<Props> = ({ plan, size }) => {
     const newValues = values.map((row) => [...row]);
     newValues[position.y][position.x] = value;
     setValues(newValues);
+    localStorage.setItem('values', JSON.stringify(newValues));
   };
+  useEffect(() => {
+    const storedValues = localStorage.getItem('values');
+    const values = storedValues && JSON.parse(storedValues);
+    if (values) {
+      setValues(values);
+    }
+  }, []);
 
   const inputRefs = useRef({});
 

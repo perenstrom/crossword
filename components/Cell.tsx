@@ -64,6 +64,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
       {legend && <Legend>{legend}</Legend>}
       {decorator && <Decorator decorator={decorator} />}
       <Input
+        autoComplete="off"
         ref={ref}
         value={value}
         isActive={isActive}
