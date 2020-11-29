@@ -83,12 +83,12 @@ export const plan: Plan = [
     { type: CellType.blank },
     { type: CellType.cell },
     { type: CellType.blank },
-    { type: CellType.cell },
-    { type: CellType.blank }
+    { type: CellType.cell, legend: '13.' },
+    { type: CellType.cell }
   ],
   [
     { type: CellType.cell, decorator: 'vth' },
-    { type: CellType.cell, legend: '13.' },
+    { type: CellType.cell, legend: '14.' },
     { type: CellType.blank },
     { type: CellType.cell },
     { type: CellType.blank },
@@ -105,11 +105,11 @@ export const plan: Plan = [
     { type: CellType.blank },
     { type: CellType.cell },
     { type: CellType.blank },
-    { type: CellType.cell, legend: '14.' },
+    { type: CellType.cell, legend: '15.' },
     { type: CellType.cell, decorator: 'htv' }
   ],
   [
-    { type: CellType.cell, legend: '15.' },
+    { type: CellType.cell, legend: '16.' },
     { type: CellType.cell },
     { type: CellType.cell },
     { type: CellType.cell },
