@@ -19,6 +19,8 @@ export interface PlanCell {
 
 export type Plan = PlanCell[][];
 
+export const plan3: string = 'w9h9xa5o2xnx2olo3x3nax2aoxa2onox2aoorxoxnao7xnox2axoxaonolaxoxoxoxnxox3oxaornao3xoloxo';
+
 export const plan: Plan = [
   [
     { type: CellType.blank },
