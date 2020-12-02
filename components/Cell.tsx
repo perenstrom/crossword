@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
-import { CellPosition } from 'types/Types';
-import { Decorator, DecoratorType } from './Decorator';
+import { CellPosition, DecoratorType } from 'types/Types';
+import { Decorator } from './Decorator';
 
 const CellWrapper = styled.div`
   border: 1px solid black;
@@ -46,7 +46,7 @@ const Legend = styled.div`
 
 interface Props {
   value: string;
-  legend?: string;
+  legend?: number;
   decorator?: DecoratorType;
   position: CellPosition;
   isActive: boolean;
@@ -61,7 +61,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
 ) {
   return (
     <CellWrapper onClick={() => onClick(position)}>
-      {legend && <Legend>{legend}</Legend>}
+      {legend && <Legend>{legend}.</Legend>}
       {decorator && <Decorator decorator={decorator} />}
       <Input
         name={Math.random().toString()}

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-
-export type DecoratorType = 'htv' | 'vth';
+import { DecoratorType } from 'types/Types';
 
 interface DecoratorWrapperProps {
   readonly decorator: DecoratorType;

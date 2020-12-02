@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { GetStaticProps, NextPage } from 'next';
 import { Cell } from 'components/Cell';
 
-import { Plan, plan as rawPlan } from 'data/plan';
-import { CellPosition, Direction, Size } from 'types/Types';
+import { plan as rawPlan } from 'data/plan';
+import { CellPosition, Direction, Plan, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 import { calculateLines } from 'utils/calculateLines';
 import { Wrapper } from 'components/Wrapper';

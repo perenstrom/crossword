@@ -1,6 +1,4 @@
-import { DecoratorType } from 'components/Decorator';
-import { CellType, Plan } from 'data/plan';
-import { CellPosition, Direction, LineItem, Size } from 'types/Types';
+import { CellPosition, CellType, DecoratorType, Direction, LineItem, Plan, Size } from 'types/Types';
 import { positionShorthandToLong } from './positionShorthandToLong';
 
 const getNextCellPosition = (

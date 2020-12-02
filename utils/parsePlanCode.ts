@@ -1,5 +1,4 @@
-import { Plan } from 'data/plan';
-import { Size } from 'types/Types';
+import { CellType, DecoratorType, Plan, PlanCell, Size } from 'types/Types';
 
 enum CellCode {
   blank = 'x',
@@ -38,10 +37,48 @@ const splitRows = (planCode: string, size: Size): string[] => {
   return rowCodes;
 };
 
+const convertToCell = (cellCode: string): PlanCell => {
+  let type: CellType;
+  let legend: number = null;
+  let decorator: DecoratorType = null;
+
+  switch (cellCode[0]) {
+    case CellCode.wordStart:
+      type = CellType.cell;
+      legend = 0;
+      break;
+    case CellCode.cell:
+      type = CellType.cell;
+      break;
+    case CellCode.blank:
+      type = CellType.blank;
+      break;
+  }
+
+  if (cellCode.length > 1) {
+    switch (cellCode[1]) {
+      case CellCode.htv:
+        decorator = DecoratorType.htv;
+        break;
+      case CellCode.vth:
+        decorator = DecoratorType.vth;
+        break;
+    }
+  }
+
+  const legendObj = legend !== null ? { legend } : {};
+  const decoratorObj = decorator !== null ? { decorator } : {};
+  return {
+    type,
+    ...legendObj,
+    ...decoratorObj
+  };
+};
+
 const extrudeRowPart = (
   rowCode: string,
   rowNumber: number
-): [string[], string] => {
+): [PlanCell[], string] => {
   const firstChar = rowCode[0];
   if (
     ![CellCode.blank, CellCode.cell, CellCode.wordStart].includes(
@@ -64,30 +101,34 @@ const extrudeRowPart = (
   const modifierIsDecorator = [CellCode.htv, CellCode.vth].includes(
     modifier as CellCode
   );
-  const cellCodes =
+  const cells: PlanCell[] =
     remainingMatch && modifierIsDecorator
-      ? [`${firstChar}${modifier}`]
+      ? [convertToCell(`${firstChar}${modifier}`)]
       : remainingMatch
-      ? new Array(parseInt(modifier, 10)).fill(firstChar)
-      : [firstChar];
+      ? new Array(parseInt(modifier, 10)).fill(convertToCell(firstChar))
+      : [convertToCell(firstChar)];
   const nextRowCodePart = rowCode.slice(1 + modifierLength);
 
-  return [cellCodes, nextRowCodePart];
+  return [cells, nextRowCodePart];
 };
 
-const parseRowPart = (rowCode: string, rowNumber: number): string[] => {
-  const [cellCodes, remaining] = extrudeRowPart(rowCode, rowNumber);
-  let result = [...cellCodes];
+const parseRowPart = (rowCode: string, rowNumber: number): PlanCell[] => {
+  const [cells, remaining] = extrudeRowPart(rowCode, rowNumber);
+  let result = [...cells];
 
   if (remaining) {
     const innerResult = parseRowPart(remaining, rowNumber);
-    result = [...cellCodes, ...innerResult];
+    result = [...cells, ...innerResult];
   }
 
   return result;
 };
 
-const parseRow = (rowCode: string, rowNumber: number, size: Size): string[] => {
+const parseRow = (
+  rowCode: string,
+  rowNumber: number,
+  size: Size
+): PlanCell[] => {
   const row = parseRowPart(rowCode, rowNumber);
 
   if (row.length !== size.x) {
@@ -98,7 +139,7 @@ const parseRow = (rowCode: string, rowNumber: number, size: Size): string[] => {
   return row;
 };
 
-const parseRows = (rowCodes: string[], size: Size): string[][] => {
+const parseRows = (rowCodes: string[], size: Size): Plan => {
   const plan = rowCodes.map((rowCode, rowNumber) =>
     parseRow(rowCode, rowNumber, size)
   );
@@ -106,10 +147,26 @@ const parseRows = (rowCodes: string[], size: Size): string[][] => {
   return plan;
 };
 
-export const parsePlanCode = (planCode: string): string[][] => {
+const fillLegends = (plan: Plan): Plan => {
+  let startNumber = 1;
+  const newPlan = plan.map((row) =>
+    row.map((cell) => {
+      const newCell: PlanCell = { ...cell };
+      if (newCell.legend === 0) {
+        newCell.legend = startNumber;
+        startNumber += 1;
+      }
+      return newCell;
+    })
+  );
+  return newPlan;
+};
+
+export const parsePlanCode = (planCode: string): Plan => {
   const [size, planCodeWithoutSize] = exciseSize(planCode);
   const rowCodes = splitRows(planCodeWithoutSize, size);
   const plan = parseRows(rowCodes, size);
+  const planWithLegends = fillLegends(plan);
 
-  return plan;
+  return planWithLegends;
 };
