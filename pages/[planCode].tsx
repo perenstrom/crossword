@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import { GetStaticProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { Cell } from 'components/Cell';
 
-import { plan as rawPlan } from 'data/plan';
 import { CellPosition, Direction, Plan, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 import { calculateLines } from 'utils/calculateLines';
@@ -12,13 +11,15 @@ import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
 import { CrosswordGrid } from 'components/CrosswordGrid';
 import { Blank } from 'components/Blank';
 import { positionShorthandToLong } from 'utils/positionShorthandToLong';
+import { parsePlanCode } from 'utils/parsePlanCode';
 
 interface Props {
   plan: Plan;
   size: Size;
+  planCode: string;
 }
 
-const Home: NextPage<Props> = ({ plan, size }) => {
+const Home: NextPage<Props> = ({ plan, size, planCode }) => {
   const [values, setValues] = useState<string[][]>(
     Array(size.y).fill(Array(size.x).fill(''))
   );
@@ -26,13 +27,13 @@ const Home: NextPage<Props> = ({ plan, size }) => {
     const newValues = values.map((row) => [...row]);
     newValues[position.y][position.x] = value;
     setValues(newValues);
-    localStorage.setItem('values', JSON.stringify(newValues));
+    localStorage.setItem('values', JSON.stringify({ [planCode]: newValues }));
   };
   useEffect(() => {
     const storedValues = localStorage.getItem('values');
     const values = storedValues && JSON.parse(storedValues);
-    if (values) {
-      setValues(values);
+    if (values && values[planCode]) {
+      setValues(values[planCode]);
     }
   }, []);
 
@@ -140,7 +141,10 @@ const Home: NextPage<Props> = ({ plan, size }) => {
 
 export default Home;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async (context) => {
+  const planCode = context.params.planCode as string;
+  const rawPlan = parsePlanCode(planCode);
+
   const size: Size = {
     y: rawPlan.length,
     x: rawPlan[0].length
@@ -149,8 +153,23 @@ export const getStaticProps: GetStaticProps = async () => {
   const extendedPlan = calculateLines(rawPlan, size);
   return {
     props: {
+      planCode: planCode,
       plan: extendedPlan,
       size: size
     }
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {
+          planCode:
+            'w9h9xa5o2xnx2olo3x3nax2aoxa2onox2aoorxoxnao7xnox2axoxaonolaxoxoxoxnxox3oxaornao3xoloxo'
+        }
+      }
+    ],
+    fallback: false
   };
 };
