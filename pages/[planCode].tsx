@@ -143,19 +143,13 @@ export default Home;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const planCode = context.params.planCode as string;
-  const rawPlan = parsePlanCode(planCode);
+  const [plan, size] = parsePlanCode(planCode);
 
-  const size: Size = {
-    y: rawPlan.length,
-    x: rawPlan[0].length
-  };
-
-  const extendedPlan = calculateLines(rawPlan, size);
   return {
     props: {
-      planCode: planCode,
-      plan: extendedPlan,
-      size: size
+      planCode,
+      plan,
+      size
     }
   };
 };

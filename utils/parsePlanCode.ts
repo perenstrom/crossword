@@ -1,4 +1,5 @@
 import { CellType, DecoratorType, Plan, PlanCell, Size } from 'types/Types';
+import { calculateLines } from './calculateLines';
 
 enum CellCode {
   blank = 'x',
@@ -162,11 +163,12 @@ const fillLegends = (plan: Plan): Plan => {
   return newPlan;
 };
 
-export const parsePlanCode = (planCode: string): Plan => {
+export const parsePlanCode = (planCode: string): [Plan, Size] => {
   const [size, planCodeWithoutSize] = exciseSize(planCode);
   const rowCodes = splitRows(planCodeWithoutSize, size);
   const plan = parseRows(rowCodes, size);
   const planWithLegends = fillLegends(plan);
+  const planWithLines = calculateLines(planWithLegends, size);
 
-  return planWithLegends;
+  return [planWithLines, size];
 };
