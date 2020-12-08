@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { Cell } from 'components/Cell';
+import debounce from 'lodash.debounce';
 
+import { Cell } from 'components/Cell';
 import { CellPosition, Direction, PixelSize, Plan, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 import { Wrapper } from 'components/Wrapper';
@@ -43,15 +44,30 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
     height: 0
   });
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
+
+  const calculateNewCrosswordSize = () => {
     const crosswordArea = {
       width: crosswordWrapperElement.current.offsetWidth,
       height: crosswordWrapperElement.current.offsetHeight
     };
     const crosswordSize = calculateCrosswordSize(crosswordArea, size);
     setCrosswordSize(crosswordSize);
+  };
+  const debouncedCalculateNewCrosswordSize = debounce(
+    calculateNewCrosswordSize,
+    50
+  );
+  useEffect(() => {
+    calculateNewCrosswordSize();
     setLoaded(true);
   }, [crosswordWrapperElement.current]);
+
+  useEffect(() => {
+    window.addEventListener('resize', debouncedCalculateNewCrosswordSize);
+    return () => {
+      window.removeEventListener('resize', debouncedCalculateNewCrosswordSize);
+    };
+  }, []);
 
   const inputRefs = useRef({});
 
