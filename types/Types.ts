@@ -13,6 +13,11 @@ export interface Size {
   y: number;
 }
 
+export interface PixelSize {
+  width: number;
+  height: number;
+}
+
 export interface LineItem {
   cellPosition: string;
   direction: Direction | 'both';

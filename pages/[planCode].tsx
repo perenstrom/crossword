@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { Cell } from 'components/Cell';
 
-import { CellPosition, Direction, Plan, Size } from 'types/Types';
+import { CellPosition, Direction, PixelSize, Plan, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 import { Wrapper } from 'components/Wrapper';
 import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
@@ -11,6 +11,7 @@ import { CrosswordGrid } from 'components/CrosswordGrid';
 import { Blank } from 'components/Blank';
 import { positionShorthandToLong } from 'utils/positionShorthandToLong';
 import { parsePlanCode } from 'utils/parsePlanCode';
+import { calculateCrosswordSize } from 'utils/calculateCrosswordSize';
 
 interface Props {
   plan: Plan;
@@ -37,14 +38,19 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
   }, []);
 
   const crosswordWrapperElement = useRef<HTMLDivElement>(null);
-  const [crossWordWidth, setCrossWordWidth] = useState<number>(0);
+  const [crosswordSize, setCrosswordSize] = useState<PixelSize>({
+    width: 0,
+    height: 0
+  });
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    const crossWordArea = {
+    const crosswordArea = {
       width: crosswordWrapperElement.current.offsetWidth,
       height: crosswordWrapperElement.current.offsetHeight
     };
-    const maxSize = Math.min(crossWordArea.width, crossWordArea.height);
-    setCrossWordWidth(maxSize);
+    const crosswordSize = calculateCrosswordSize(crosswordArea, size);
+    setCrosswordSize(crosswordSize);
+    setLoaded(true);
   }, [crosswordWrapperElement.current]);
 
   const inputRefs = useRef({});
@@ -110,8 +116,8 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
         <title>Kryssplanen</title>
       </Head>
       <CrosswordGridWrapper ref={crosswordWrapperElement}>
-        {crossWordWidth && (
-          <CrosswordGrid rows={size.y} columns={size.x} width={crossWordWidth}>
+        {loaded && (
+          <CrosswordGrid rows={size.y} columns={size.x} size={crosswordSize}>
             {plan.map((row, y) =>
               row.map((cell, x) =>
                 cell.type === 'blank' ? (
