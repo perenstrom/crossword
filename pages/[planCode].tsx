@@ -5,7 +5,6 @@ import { Cell } from 'components/Cell';
 
 import { CellPosition, Direction, Plan, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
-import { calculateLines } from 'utils/calculateLines';
 import { Wrapper } from 'components/Wrapper';
 import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
 import { CrosswordGrid } from 'components/CrosswordGrid';
@@ -36,6 +35,17 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
       setValues(values[planCode]);
     }
   }, []);
+
+  const crosswordWrapperElement = useRef<HTMLDivElement>(null);
+  const [crossWordWidth, setCrossWordWidth] = useState<number>(0);
+  useEffect(() => {
+    const crossWordArea = {
+      width: crosswordWrapperElement.current.offsetWidth,
+      height: crosswordWrapperElement.current.offsetHeight
+    };
+    const maxSize = Math.min(crossWordArea.width, crossWordArea.height);
+    setCrossWordWidth(maxSize);
+  }, [crosswordWrapperElement.current]);
 
   const inputRefs = useRef({});
 
@@ -99,42 +109,48 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
       <Head>
         <title>Kryssplanen</title>
       </Head>
-      <CrosswordGridWrapper>
-        <CrosswordGrid>
-          {plan.map((row, y) =>
-            row.map((cell, x) =>
-              cell.type === 'blank' ? (
-                <Blank onClick={() => setActiveCell(null)} key={`${x}-${y}`} />
-              ) : (
-                <Cell
-                  key={`x${x}y${y}`}
-                  ref={(element) => (inputRefs.current[`x${x}y${y}`] = element)}
-                  value={values[y][x]}
-                  legend={cell.legend}
-                  decorator={cell.decorator}
-                  position={{ x, y }}
-                  isActive={cellPositionEqual({ x, y }, activeCell)}
-                  isInLine={
-                    (activeDirection === Direction.horizontal &&
-                      activeCell &&
-                      plan[activeCell.y][activeCell.x].line.horizontal.includes(
-                        `x${x}y${y}`
-                      )) ||
-                    (activeDirection === Direction.vertical &&
-                      activeCell &&
-                      plan[activeCell.y][activeCell.x].line.vertical.includes(
-                        `x${x}y${y}`
-                      ))
-                  }
-                  onClick={handleCellClick}
-                  onChange={handleCellChange}
-                />
+      <CrosswordGridWrapper ref={crosswordWrapperElement}>
+        {crossWordWidth && (
+          <CrosswordGrid rows={size.y} columns={size.x} width={crossWordWidth}>
+            {plan.map((row, y) =>
+              row.map((cell, x) =>
+                cell.type === 'blank' ? (
+                  <Blank
+                    onClick={() => setActiveCell(null)}
+                    key={`${x}-${y}`}
+                  />
+                ) : (
+                  <Cell
+                    key={`x${x}y${y}`}
+                    ref={(element) =>
+                      (inputRefs.current[`x${x}y${y}`] = element)
+                    }
+                    value={values[y][x]}
+                    legend={cell.legend}
+                    decorator={cell.decorator}
+                    position={{ x, y }}
+                    isActive={cellPositionEqual({ x, y }, activeCell)}
+                    isInLine={
+                      (activeDirection === Direction.horizontal &&
+                        activeCell &&
+                        plan[activeCell.y][
+                          activeCell.x
+                        ].line.horizontal.includes(`x${x}y${y}`)) ||
+                      (activeDirection === Direction.vertical &&
+                        activeCell &&
+                        plan[activeCell.y][activeCell.x].line.vertical.includes(
+                          `x${x}y${y}`
+                        ))
+                    }
+                    onClick={handleCellClick}
+                    onChange={handleCellChange}
+                  />
+                )
               )
-            )
-          )}
-        </CrosswordGrid>
+            )}
+          </CrosswordGrid>
+        )}
       </CrosswordGridWrapper>
-      {<pre>{JSON.stringify(activeCell, null, 2)}</pre>}
     </Wrapper>
   );
 };
@@ -161,6 +177,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
         params: {
           planCode:
             'w9h9xa5o2xnx2olo3x3nax2aoxa2onox2aoorxoxnao7xnox2axoxaonolaxoxoxoxnxox3oxaornao3xoloxo'
+        }
+      },
+      {
+        params: {
+          planCode:
+            'w10h10xax8naoaoxao2axnoxox2ox2oxnao6xoxnox4oxao2naoao3x2oxnoxox3axoxnx2ox2ao3ornx2a2x2ox2onao6x2o'
         }
       }
     ],

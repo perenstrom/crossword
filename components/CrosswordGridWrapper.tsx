@@ -1,11 +1,9 @@
 import styled from 'styled-components';
 
 export const CrosswordGridWrapper = styled.div`
-  position: relative;
+  display: flex;
   width: 100%;
-  ::after {
-    content: '';
-    display: block;
-    padding-bottom: 100%;
-  }
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 `;
