@@ -72,7 +72,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
         isInline={isInLine}
         type="text"
         maxLength={1}
-        onChange={(event) => onChange(position, event.target.value)}
+        onInput={(event) => onChange(position, event.currentTarget.value)}
       />
     </CellWrapper>
   );

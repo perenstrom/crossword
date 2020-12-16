@@ -113,7 +113,7 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
     }
   };
 
-  const handleCellChange = (position: CellPosition, value) => {
+  const handleCellChange = (position: CellPosition, value: string) => {
     setValue(position, value);
     if (value.length === 1) {
       giveNextCellFocus(position);
