@@ -21,7 +21,7 @@ const Input = styled.input<InputProps>`
   text-transform: uppercase;
   border: 0;
   background-color: ${({ isActive, isInline }) =>
-    isActive ? '#D0D0FF' : isInline ? '#EFEFFF' : 'white'};
+    isActive ? '#95aef9' : isInline ? '#CCDCFB' : 'white'};
 
   :focus {
     outline: 0;
