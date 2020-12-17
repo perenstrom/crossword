@@ -46,3 +46,9 @@ export interface PlanCell {
 }
 
 export type Plan = PlanCell[][];
+
+export enum EditMode {
+  cell = 'cell',
+  wordStart = 'wordStart',
+  decorator = 'decorator'
+}

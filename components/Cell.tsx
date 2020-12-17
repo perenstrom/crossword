@@ -49,14 +49,23 @@ interface Props {
   legend?: number;
   decorator?: DecoratorType;
   position: CellPosition;
-  isActive: boolean;
-  isInLine: boolean;
-  onClick: (position: CellPosition) => void;
-  onChange: (position: CellPosition, value: string) => void;
+  isActive?: boolean;
+  isInLine?: boolean;
+  onClick?: (position: CellPosition) => void;
+  onChange?: (position: CellPosition, value: string) => void;
 }
 
 export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
-  { value, legend, decorator, position, isActive, isInLine, onClick, onChange },
+  {
+    value,
+    legend,
+    decorator,
+    position,
+    isActive = false,
+    isInLine = false,
+    onClick = () => null,
+    onChange = () => null
+  },
   ref
 ) {
   return (
