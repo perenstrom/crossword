@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import debounce from 'lodash.debounce';
 
 import { Cell } from 'components/Cell';
-import { CellPosition, Direction, PixelSize, Plan, Size } from 'types/Types';
+import { CellPosition, Direction, Plan, Size } from 'types/Types';
 import { cellPositionEqual } from 'utils/cellPositionEqual';
 import { Wrapper } from 'components/Wrapper';
 import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
@@ -12,7 +11,7 @@ import { CrosswordGrid } from 'components/CrosswordGrid';
 import { Blank } from 'components/Blank';
 import { positionShorthandToLong } from 'utils/positionShorthandToLong';
 import { parsePlanCode } from 'utils/parsePlanCode';
-import { calculateCrosswordSize } from 'utils/calculateCrosswordSize';
+import { useCrosswordSize } from 'hooks/useCrosswordSize';
 
 interface Props {
   plan: Plan;
@@ -39,35 +38,10 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
   }, []);
 
   const crosswordWrapperElement = useRef<HTMLDivElement>(null);
-  const [crosswordSize, setCrosswordSize] = useState<PixelSize>({
-    width: 0,
-    height: 0
-  });
-  const [loaded, setLoaded] = useState(false);
-
-  const calculateNewCrosswordSize = () => {
-    const crosswordArea = {
-      width: crosswordWrapperElement.current.offsetWidth,
-      height: crosswordWrapperElement.current.offsetHeight
-    };
-    const crosswordSize = calculateCrosswordSize(crosswordArea, size);
-    setCrosswordSize(crosswordSize);
-  };
-  const debouncedCalculateNewCrosswordSize = debounce(
-    calculateNewCrosswordSize,
-    50
+  const [crosswordSize, loaded] = useCrosswordSize(
+    crosswordWrapperElement,
+    size
   );
-  useEffect(() => {
-    calculateNewCrosswordSize();
-    setLoaded(true);
-  }, [crosswordWrapperElement.current]);
-
-  useEffect(() => {
-    window.addEventListener('resize', debouncedCalculateNewCrosswordSize);
-    return () => {
-      window.removeEventListener('resize', debouncedCalculateNewCrosswordSize);
-    };
-  }, []);
 
   const inputRefs = useRef({});
 

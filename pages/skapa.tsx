@@ -20,6 +20,7 @@ import { CrosswordGrid } from 'components/CrosswordGrid';
 import { Blank } from 'components/Blank';
 import { calculateCrosswordSize } from 'utils/calculateCrosswordSize';
 import styled from 'styled-components';
+import { useCrosswordSize } from 'hooks/useCrosswordSize';
 
 const Flex = styled.div`
   display: flex;
@@ -44,28 +45,10 @@ const Create: NextPage<Props> = () => {
   const [editMode, setEditMode] = useState<EditMode>(EditMode.cell);
 
   const crosswordWrapperElement = useRef<HTMLDivElement>(null);
-  const [crosswordSize, setCrosswordSize] = useState<PixelSize>({
-    width: 0,
-    height: 0
-  });
-  const [loaded, setLoaded] = useState(false);
-
-  const calculateNewCrosswordSize = () => {
-    const crosswordArea = {
-      width: crosswordWrapperElement.current.offsetWidth,
-      height: crosswordWrapperElement.current.offsetHeight
-    };
-    const crosswordSize = calculateCrosswordSize(crosswordArea, size);
-    setCrosswordSize(crosswordSize);
-  };
-  const debouncedCalculateNewCrosswordSize = debounce(
-    calculateNewCrosswordSize,
-    50
+  const [crosswordSize, loaded] = useCrosswordSize(
+    crosswordWrapperElement,
+    size
   );
-  useEffect(() => {
-    calculateNewCrosswordSize();
-    setLoaded(true);
-  }, [crosswordWrapperElement.current, size]);
 
   useEffect(() => {
     const currentSize: Size = { x: plan[0].length, y: plan.length };
@@ -91,13 +74,6 @@ const Create: NextPage<Props> = () => {
       setPlan(newPlan);
     }
   }, [size]);
-
-  useEffect(() => {
-    window.addEventListener('resize', debouncedCalculateNewCrosswordSize);
-    return () => {
-      window.removeEventListener('resize', debouncedCalculateNewCrosswordSize);
-    };
-  }, []);
 
   const changeCellType = (position: CellPosition) => {
     const newCell = { ...plan[position.y][position.x] };
