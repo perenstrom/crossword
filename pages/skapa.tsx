@@ -21,15 +21,12 @@ import { Blank } from 'components/Blank';
 import { calculateCrosswordSize } from 'utils/calculateCrosswordSize';
 import styled from 'styled-components';
 import { useCrosswordSize } from 'hooks/useCrosswordSize';
+import { EditOptions } from 'components/EditOptions';
 
 const Flex = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-`;
-
-const EditOptions = styled.div`
-  color: white;
 `;
 
 interface Props {}
@@ -133,6 +130,17 @@ const Create: NextPage<Props> = () => {
     }
   };
 
+  const handleSizeChange = (dimension: 'x' | 'y', value: number) => {
+    switch (dimension) {
+      case 'x':
+        setSize({ x: value, y: size.y });
+        break;
+      case 'x':
+        setSize({ x: size.x, y: value });
+        break;
+    }
+  };
+
   return (
     <>
       <Head>
@@ -140,35 +148,11 @@ const Create: NextPage<Props> = () => {
       </Head>
       <Wrapper>
         <Flex>
-          <EditOptions>
-            <label htmlFor="width">Bredd</label>
-            <input
-              id="width"
-              type="number"
-              value={size.x}
-              onChange={(event) =>
-                setSize({ x: parseInt(event.target.value, 10), y: size.y })
-              }
-            />
-            <br />
-            <label htmlFor="height">Höjd</label>
-            <input
-              id="height"
-              type="number"
-              value={size.y}
-              onChange={(event) =>
-                setSize({ x: size.x, y: parseInt(event.target.value, 10) })
-              }
-            />
-            <br />
-            <button onClick={() => setEditMode(EditMode.cell)}>Rutor</button>
-            <button onClick={() => setEditMode(EditMode.wordStart)}>
-              Siffror
-            </button>
-            <button onClick={() => setEditMode(EditMode.decorator)}>
-              Svängar
-            </button>
-          </EditOptions>
+          <EditOptions
+            size={size}
+            onSizeChange={handleSizeChange}
+            setEditMode={setEditMode}
+          />
           <CrosswordGridWrapper ref={crosswordWrapperElement}>
             {loaded && (
               <CrosswordGrid
