@@ -1,27 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
-import debounce from 'lodash.debounce';
+import styled from 'styled-components';
 
-import { Cell } from 'components/Cell';
 import {
   CellPosition,
   CellType,
   DecoratorType,
   EditMode,
-  PixelSize,
   Plan,
   PlanCell,
   Size
 } from 'types/Types';
+
+import { Cell } from 'components/Cell';
 import { Wrapper } from 'components/Wrapper';
 import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
 import { CrosswordGrid } from 'components/CrosswordGrid';
 import { Blank } from 'components/Blank';
-import { calculateCrosswordSize } from 'utils/calculateCrosswordSize';
-import styled from 'styled-components';
-import { useCrosswordSize } from 'hooks/useCrosswordSize';
 import { EditOptions } from 'components/EditOptions';
+
+import { useCrosswordSize } from 'hooks/useCrosswordSize';
+import { usePlanCreatorStorage } from 'hooks/usePlanCreatorStorage';
 
 const Flex = styled.div`
   display: flex;
@@ -42,6 +42,16 @@ const Create: NextPage<Props> = () => {
   const [plan, setPlan] = useState<Plan>(
     Array(size.y).fill(Array(size.x).fill({ ...defaultCell }))
   );
+  const [storedPlan, storedSize, storePlan] = usePlanCreatorStorage();
+  useEffect(() => {
+    if (storedPlan) {
+      setPlan(storedPlan);
+    }
+    if (storedSize) {
+      setSize(storedSize);
+    }
+  }, [storedPlan, storedSize]);
+
   const [editMode, setEditMode] = useState<EditMode>(EditMode.cell);
 
   const crosswordWrapperElement = useRef<HTMLDivElement>(null);
@@ -72,6 +82,7 @@ const Create: NextPage<Props> = () => {
       }
 
       setPlan(newPlan);
+      storePlan(newPlan, size);
     }
   }, [size]);
 
@@ -84,6 +95,7 @@ const Create: NextPage<Props> = () => {
     newPlan[position.y][position.x] = newCell;
 
     setPlan(newPlan);
+    storePlan(newPlan, size);
   };
 
   const changeWordStart = (position: CellPosition) => {
@@ -94,6 +106,7 @@ const Create: NextPage<Props> = () => {
     newPlan[position.y][position.x] = newCell;
 
     setPlan(newPlan);
+    storePlan(newPlan, size);
   };
 
   const changeDecorator = (position: CellPosition) => {
@@ -114,6 +127,7 @@ const Create: NextPage<Props> = () => {
     newPlan[position.y][position.x] = newCell;
 
     setPlan(newPlan);
+    storePlan(newPlan, size);
   };
 
   const handleClick = (position: CellPosition) => {
@@ -135,7 +149,7 @@ const Create: NextPage<Props> = () => {
       case 'x':
         setSize({ x: value, y: size.y });
         break;
-      case 'x':
+      case 'y':
         setSize({ x: size.x, y: value });
         break;
     }
