@@ -29,7 +29,7 @@ export function useCrosswordSize(
   useEffect(() => {
     calculateNewCrosswordSize();
     setLoaded(true);
-  }, [wrapperElement.current]);
+  }, [wrapperElement.current, size]);
 
   useEffect(() => {
     window.addEventListener('resize', debouncedCalculateNewCrosswordSize);
