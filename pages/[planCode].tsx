@@ -12,6 +12,7 @@ import { Blank } from 'components/Blank';
 import { positionShorthandToLong } from 'utils/positionShorthandToLong';
 import { parsePlanCode } from 'utils/parsePlanCode';
 import { useCrosswordSize } from 'hooks/useCrosswordSize';
+import { useValuesStorage } from 'hooks/useValuesStorage';
 
 interface Props {
   plan: Plan;
@@ -23,19 +24,19 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
   const [values, setValues] = useState<string[][]>(
     Array(size.y).fill(Array(size.x).fill(''))
   );
+  const [storedValues, storeValues] = useValuesStorage(planCode, size);
+  useEffect(() => {
+    if (storedValues) {
+      setValues(storedValues);
+    }
+  }, [storedValues]);
+
   const setValue = (position: CellPosition, value) => {
     const newValues = values.map((row) => [...row]);
     newValues[position.y][position.x] = value;
     setValues(newValues);
-    localStorage.setItem('values', JSON.stringify({ [planCode]: newValues }));
+    storeValues(newValues);
   };
-  useEffect(() => {
-    const storedValues = localStorage.getItem('values');
-    const values = storedValues && JSON.parse(storedValues);
-    if (values && values[planCode]) {
-      setValues(values[planCode]);
-    }
-  }, []);
 
   const crosswordWrapperElement = useRef<HTMLDivElement>(null);
   const [crosswordSize, loaded] = useCrosswordSize(
@@ -140,7 +141,7 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
                           `x${x}y${y}`
                         ))
                     }
-                    size={crosswordSize.width/size.x}
+                    size={crosswordSize.width / size.x}
                     onClick={handleCellClick}
                     onChange={handleCellChange}
                   />
