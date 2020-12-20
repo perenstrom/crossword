@@ -11,13 +11,14 @@ const CellWrapper = styled.div`
 interface InputProps {
   readonly isActive: boolean;
   readonly isInline: boolean;
+  readonly size: number;
 }
 
 const Input = styled.input<InputProps>`
   width: 100%;
   height: 100%;
   text-align: center;
-  font-size: 2em;
+  font-size: ${({ size }) => `${size * 0.5}px`};
   text-transform: uppercase;
   border: 0;
   background-color: ${({ isActive, isInline }) =>
@@ -26,22 +27,19 @@ const Input = styled.input<InputProps>`
   :focus {
     outline: 0;
   }
-
-  @media (min-width: 720px) {
-    font-size: 3em;
-  }
 `;
 
-const Legend = styled.div`
+interface LegendProps {
+  readonly size: number;
+}
+
+const Legend = styled.div<LegendProps>`
   position: absolute;
   top: 0;
   left: 0;
-  padding: 0.3rem;
+  padding: 0.2em 0.3em;
   font-weight: bold;
-
-  @media (min-width: 414px) {
-    padding: 0.5rem;
-  }
+  font-size: ${({ size }) => `${size * 0.25}px`};
 `;
 
 interface Props {
@@ -49,6 +47,7 @@ interface Props {
   legend?: number;
   decorator?: DecoratorType;
   position: CellPosition;
+  size: number;
   isActive?: boolean;
   isInLine?: boolean;
   onClick?: (position: CellPosition) => void;
@@ -61,6 +60,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
     legend,
     decorator,
     position,
+    size = 0,
     isActive = false,
     isInLine = false,
     onClick = () => null,
@@ -70,7 +70,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
 ) {
   return (
     <CellWrapper onClick={() => onClick(position)}>
-      {legend && <Legend>{legend}.</Legend>}
+      {legend && <Legend size={size}>{legend}.</Legend>}
       {decorator && <Decorator decorator={decorator} />}
       <Input
         name={Math.random().toString()}
@@ -81,6 +81,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
         isInline={isInLine}
         type="text"
         maxLength={1}
+        size={size}
         onInput={(event) => onChange(position, event.currentTarget.value)}
       />
     </CellWrapper>

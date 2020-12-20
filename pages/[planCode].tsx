@@ -140,6 +140,7 @@ const Home: NextPage<Props> = ({ plan, size, planCode }) => {
                           `x${x}y${y}`
                         ))
                     }
+                    size={crosswordSize.width/size.x}
                     onClick={handleCellClick}
                     onChange={handleCellChange}
                   />
