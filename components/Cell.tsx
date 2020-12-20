@@ -70,7 +70,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
 ) {
   return (
     <CellWrapper onClick={() => onClick(position)}>
-      {legend && <Legend size={size}>{legend}.</Legend>}
+      {(!!legend || legend === 0) && <Legend size={size}>{legend}.</Legend>}
       {decorator && <Decorator decorator={decorator} />}
       <Input
         name={Math.random().toString()}

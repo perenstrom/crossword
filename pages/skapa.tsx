@@ -26,6 +26,9 @@ const Flex = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`;
+
+const EditOptions = styled.div`
   color: white;
 `;
 
@@ -137,7 +140,7 @@ const Create: NextPage<Props> = () => {
       </Head>
       <Wrapper>
         <Flex>
-          <div>
+          <EditOptions>
             <label htmlFor="width">Bredd</label>
             <input
               id="width"
@@ -165,7 +168,7 @@ const Create: NextPage<Props> = () => {
             <button onClick={() => setEditMode(EditMode.decorator)}>
               Svängar
             </button>
-          </div>
+          </EditOptions>
           <CrosswordGridWrapper ref={crosswordWrapperElement}>
             {loaded && (
               <CrosswordGrid
