@@ -52,3 +52,14 @@ export enum EditMode {
   wordStart = 'wordStart',
   decorator = 'decorator'
 }
+
+export enum CellCode {
+  blank = 'x',
+  cell = 'o',
+  wordStart = 'a',
+  htv = 'r',
+  vth = 'l',
+  newLine = 'n',
+  width = 'w',
+  height = 'h'
+}

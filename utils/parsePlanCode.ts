@@ -1,14 +1,5 @@
-import { CellType, DecoratorType, Plan, PlanCell, Size } from 'types/Types';
+import { CellCode, CellType, DecoratorType, Plan, PlanCell, Size } from 'types/Types';
 import { calculateLines } from './calculateLines';
-
-enum CellCode {
-  blank = 'x',
-  cell = 'o',
-  wordStart = 'a',
-  htv = 'r',
-  vth = 'l',
-  newLine = 'n'
-}
 
 const exciseSize = (planCode: string): [Size, string] => {
   const sizeRegex = /^w(\d+)h(\d+)/;
