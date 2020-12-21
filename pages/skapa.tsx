@@ -144,15 +144,18 @@ const Create: NextPage<Props> = () => {
     }
   };
 
-  const handleSizeChange = (dimension: 'x' | 'y', value: number) => {
-    switch (dimension) {
-      case 'x':
-        setSize({ x: value, y: size.y });
-        break;
-      case 'y':
-        setSize({ x: size.x, y: value });
-        break;
-    }
+  const handleSizeChange = (
+    dimension: 'x' | 'y',
+    type: 'increase' | 'decrease'
+  ) => {
+    const currentSizeInDimension = size[dimension];
+    const newSizeInDimension =
+      type === 'increase'
+        ? currentSizeInDimension + 1
+        : Math.max(currentSizeInDimension - 1, 1);
+
+    const newSize: Size = { ...size, [dimension]: newSizeInDimension };
+    setSize(newSize);
   };
 
   return (
