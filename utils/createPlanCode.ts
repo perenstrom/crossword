@@ -46,14 +46,74 @@ const getCellCode = (cell: PlanCell): string => {
   }
 };
 
+interface RowCodeAccumulator {
+  compressedRowCode: string;
+  previousCellCode: string;
+  repeatCounter: number;
+}
+
+const reduceRowCode = (rowCode: string[]): string => {
+  const defaultAccumulator: RowCodeAccumulator = {
+    compressedRowCode: '',
+    previousCellCode: '',
+    repeatCounter: 1
+  };
+
+  // ooox
+  const reducedRowCode = rowCode.reduce<RowCodeAccumulator>(
+    (
+      accumulator: RowCodeAccumulator,
+      currentCellCode: string,
+      currentIndex,
+      rowCode
+    ): RowCodeAccumulator => {
+      const lastCell = currentIndex === rowCode.length - 1;
+      const cellIsCompressible = currentCellCode.length === 1;
+
+      const cellIsRepeating =
+        cellIsCompressible && currentCellCode === accumulator.previousCellCode;
+
+      const repeatCounter = cellIsRepeating ? accumulator.repeatCounter + 1 : 1;
+
+      const repeatCode =
+        !cellIsRepeating && accumulator.repeatCounter !== 1
+          ? `${accumulator.repeatCounter}`
+          : lastCell && repeatCounter !== 1
+          ? `${repeatCounter}`
+          : '';
+
+      const nextAccumulatedRowCode =
+        cellIsRepeating && !lastCell
+          ? accumulator.compressedRowCode
+          : cellIsRepeating && lastCell
+          ? `${accumulator.compressedRowCode}${repeatCode}`
+          : `${accumulator.compressedRowCode}${repeatCode}${currentCellCode}`;
+
+      return {
+        compressedRowCode: nextAccumulatedRowCode,
+        previousCellCode: currentCellCode,
+        repeatCounter: repeatCounter
+      };
+    },
+    defaultAccumulator
+  );
+
+  return reducedRowCode.compressedRowCode;
+};
+
+const getRowCode = (row: PlanCell[]): string => {
+  const rowCode = row.map((cell) => getCellCode(cell));
+  const reducedRowCode = reduceRowCode(rowCode);
+
+  return reducedRowCode;
+};
+
 export const createPlanCode = (plan: Plan): string => {
   const height = plan.length;
   const width = getWidth(plan);
   const sizePart = `${CellCode.width}${width}${CellCode.height}${height}`;
 
-  const planCode = plan
-    .map((row) => row.map((cell) => getCellCode(cell)).join(''))
-    .join(CellCode.newLine);
+  const planCode = plan.map((row) => getRowCode(row)).join(CellCode.newLine);
 
   return `${sizePart}${planCode}`;
 };
