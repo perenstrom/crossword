@@ -2,17 +2,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
-import { Cell } from 'components/Cell';
 import { CellPosition, Direction, Plan, Size } from 'types/Types';
+
 import { cellPositionEqual } from 'utils/cellPositionEqual';
+import { positionShorthandToLong } from 'utils/positionShorthandToLong';
+import { parsePlanCode } from 'utils/parsePlanCode';
+
+import { useCrosswordSize } from 'hooks/useCrosswordSize';
+import { useValuesStorage } from 'hooks/useValuesStorage';
+
+import { Cell } from 'components/Cell';
 import { Wrapper } from 'components/Wrapper';
 import { CrosswordGridWrapper } from 'components/CrosswordGridWrapper';
 import { CrosswordGrid } from 'components/CrosswordGrid';
 import { Blank } from 'components/Blank';
-import { positionShorthandToLong } from 'utils/positionShorthandToLong';
-import { parsePlanCode } from 'utils/parsePlanCode';
-import { useCrosswordSize } from 'hooks/useCrosswordSize';
-import { useValuesStorage } from 'hooks/useValuesStorage';
 
 interface Props {
   plan: Plan;
