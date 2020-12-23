@@ -14,12 +14,14 @@ export function useCrosswordSize(
   const [loaded, setLoaded] = useState(false);
 
   const calculateNewCrosswordSize = () => {
+    setLoaded(false);
     const crosswordArea = {
       width: wrapperElement.current.offsetWidth,
       height: wrapperElement.current.offsetHeight
     };
     const crosswordSize = calculateCrosswordSize(crosswordArea, size);
     setCrosswordSize(crosswordSize);
+    setLoaded(true);
   };
   const debouncedCalculateNewCrosswordSize = debounce(
     calculateNewCrosswordSize,
@@ -27,6 +29,7 @@ export function useCrosswordSize(
   );
 
   useEffect(() => {
+    setLoaded(false);
     calculateNewCrosswordSize();
     setLoaded(true);
   }, [wrapperElement.current, size]);

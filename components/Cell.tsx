@@ -48,6 +48,7 @@ interface Props {
   decorator?: DecoratorType;
   position: CellPosition;
   size: number;
+  readonly?: boolean;
   isActive?: boolean;
   isInLine?: boolean;
   onClick?: (position: CellPosition) => void;
@@ -61,6 +62,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
     decorator,
     position,
     size = 0,
+    readonly = false,
     isActive = false,
     isInLine = false,
     onClick = () => null,
@@ -77,6 +79,7 @@ export const Cell = forwardRef<HTMLInputElement, Props>(function Cell(
         autoComplete={Math.random().toString()}
         ref={ref}
         value={value}
+        readOnly={readonly}
         isActive={isActive}
         isInline={isInLine}
         type="text"

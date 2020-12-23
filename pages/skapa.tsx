@@ -215,6 +215,7 @@ const Create: NextPage<Props> = () => {
                         decorator={cell.decorator}
                         position={{ x, y }}
                         size={crosswordSize.width / size.x}
+                        readonly={true}
                         onClick={handleClick}
                       />
                     )
