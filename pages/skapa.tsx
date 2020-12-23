@@ -22,11 +22,24 @@ import { EditOptions } from 'components/EditOptions';
 
 import { useCrosswordSize } from 'hooks/useCrosswordSize';
 import { usePlanCreatorStorage } from 'hooks/usePlanCreatorStorage';
+import { createPlanCode } from 'utils/createPlanCode';
 
 const Flex = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`;
+
+const FlexRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+`;
+
+const PlanCode = styled.input`
+  flex-grow: 1;
 `;
 
 interface Props {}
@@ -95,6 +108,7 @@ const Create: NextPage<Props> = () => {
     newPlan[position.y][position.x] = newCell;
 
     setPlan(newPlan);
+    setPlanCode('');
     storePlan(newPlan, size);
   };
 
@@ -106,6 +120,7 @@ const Create: NextPage<Props> = () => {
     newPlan[position.y][position.x] = newCell;
 
     setPlan(newPlan);
+    setPlanCode('');
     storePlan(newPlan, size);
   };
 
@@ -127,6 +142,7 @@ const Create: NextPage<Props> = () => {
     newPlan[position.y][position.x] = newCell;
 
     setPlan(newPlan);
+    setPlanCode('');
     storePlan(newPlan, size);
   };
 
@@ -156,6 +172,13 @@ const Create: NextPage<Props> = () => {
 
     const newSize: Size = { ...size, [dimension]: newSizeInDimension };
     setSize(newSize);
+    setPlanCode('');
+  };
+
+  const [planCode, setPlanCode] = useState<string>('');
+  const generateCode = (plan: Plan) => {
+    const planCode = createPlanCode(plan);
+    setPlanCode(planCode);
   };
 
   return (
@@ -200,6 +223,10 @@ const Create: NextPage<Props> = () => {
               </CrosswordGrid>
             )}
           </CrosswordGridWrapper>
+          <FlexRow>
+            <button onClick={(_) => generateCode(plan)}>Skapa kod</button>
+            <PlanCode readOnly={true} type="text" value={planCode} />
+          </FlexRow>
         </Flex>
       </Wrapper>
     </>
