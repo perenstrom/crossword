@@ -36,25 +36,22 @@ export default class MyDocument extends Document {
           <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href={`${process.env.BASE_URL}/apple-touch-icon.png`}
+            href={`/apple-touch-icon.png`}
           />
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href={`${process.env.BASE_URL}/favicon-32x32.png`}
+            href={`/favicon-32x32.png`}
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href={`${process.env.BASE_URL}/favicon-16x16.png`}
+            href={`/favicon-16x16.png`}
           />
-          <link
-            rel="manifest"
-            href={`${process.env.BASE_URL}/site.webmanifest`}
-          />
-          <link rel="icon" href={`${process.env.BASE_URL}/favicon.ico`} />
+          <link rel="manifest" href={`/site.webmanifest`} />
+          <link rel="icon" href={`/favicon.ico`} />
         </Head>
         <body>
           <Main />
