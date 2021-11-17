@@ -187,6 +187,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
           planCode:
             'w10h10xax8naoaoxao2axnoxox2ox2oxnao6xoxnox4oxao2naoao3x2oxnoxox3axoxnx2ox2ao3ornx2a2x2ox2onao6x2o'
         }
+      },
+      {
+        params: {
+          planCode:
+            'w10h10x3axao3ornax2oxox3onoxao4axonox2ox3ao2nao4x2oxonox2ox3ox2na2x3ao3anao3ax2oxonxox2ao4xnxolox4ox2'
+        }
       }
     ],
     fallback: false
